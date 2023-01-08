@@ -76,6 +76,7 @@ app.post('/foundmissing', async(req,res)=>{
     const response = await axios.post(searchmissing);
 
     response.data.results.map(async(result)=>{
+      console.log(result);
       const doc = await missingDb.findOne({image_token: result.face_token});
       const pos = doc.possible_results;
       console.log(pos);
@@ -103,16 +104,12 @@ app.post('/verified/:id', async(req,res)=>{
 
 app.get('/getallmissing', function(req,res){
   missingDb.find({}, function(err,users){
-    var missingmap = {};
-    users.forEach(function(user){
-      missingmap[user._id]= user;
-    });
-    res.send(missingmap);
+    res.json(users);
   })
 });
 
 app.get('/getmissing/:name', function(req,res){
-  missingDb.find({name: req.params.name}, (err,data)=>{
+  missingDb.find({image_token: req.params.name}, (err,data)=>{
     res.json(data);
   })
 })
